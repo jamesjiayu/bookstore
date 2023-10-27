@@ -29,6 +29,7 @@ app.get('/books/:id',async(req,res)=>{
         res.status(500).send({message:err.message})
     }
 })
+//{"title":"t1", "author":"a1", "publishYear":2000 }
 app.post('/books',async(req,res)=>{
 try {
     if(!req.body.title|| !req.body.author || !req.body.publishYear){
