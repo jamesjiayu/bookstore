@@ -3,13 +3,15 @@ import {PORT,mongoDBURL} from "./config.js"
 import mongoose from 'mongoose'
 import { Book } from "./models/bookModel.js"
 const app=express()
+app.use(express.json())
 app.get("/",(req,res)=>{
     return res.send('ok')
 })
+
 app.post('/books',async(req,res)=>{
 try {
     if(!req.body.title|| !req.body.author || !req.body.publishYear){
-        returnres.status(400)
+        return res.status(400)
         .send({message:' require title,author,publish Year'})
     }
     const newBook={
@@ -24,6 +26,8 @@ try {
     res.status(500).send({message:error.message})
 }
 })
+  
+
 mongoose.connect(mongoDBURL)
 .then(()=>{
     console.log(`connected to DB`);
