@@ -1,5 +1,5 @@
 import express from 'express'
-import { Book } from '../models/bookModel'
+import { Book } from '../models/bookModel.js'
 const router=express.Router()
 router.get('/', async (req, res) => {
     try {
@@ -51,6 +51,7 @@ router.put('/:id', async (req, res) => {
         }
         const { id } = req.params
         const result = await Book.findByIdAndUpdate(id, req.body)// body? 
+      //  console.log(result,"result put");
         if (!result) {
             return res.status(404).json({ message: 'not found the book' })
         }
@@ -60,17 +61,35 @@ router.put('/:id', async (req, res) => {
         res.status(500).send({ message: error.message })
     }
 })
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (request, response) => {
     try {
-        const {id}=req.params
-        const result=Book.findByIdAndDelete(id)
-        if(!result){
-            return res.status(404).json({message: "cant find id"})
-        }
-        return res.status(200).json({message:'deleted successfully'})
+      const { id } = request.params;
+
+      const result = await Book.findByIdAndDelete(id);//if id wrong, jump to catch(error) !
+  console.log(result);
+      if (!result) {
+        return response.status(404).json({ message: 'Book not found' });
+      }
+  
+      return response.status(200).send({ message: 'Book deleted successfully' });
     } catch (error) {
-        res.status(500).send({ message: error.message })
+      console.log('error: ', error.message);
+      response.status(500).send({ message: error.message });
     }
-})
+  });
+// router.delete('/:id', async (req, res) => {
+//     try {
+//         const {id}=req.params
+//         const result=await Book.findByIdAndDelete(id)
+//         if(!result){
+//             return res.status(404).json({message: "cant find it"})
+//         }
+//         return res.status(200).json({message:'deleted successfully'})
+//     } catch (error) {
+//         console.log(error.message);
+//         res.status(500).send({ message: error.message })
+//     }
+// })
+
 
 export default router
